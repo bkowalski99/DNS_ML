@@ -218,10 +218,5 @@ for j in range(3):
     training_targets = np.concatenate((training_targets, varouts), axis=1)
     stored = reshapedFloats
 
-allcompared(stored, hbar, varouts, 3)
-print(training_inputs)
-print(training_inputs.shape)
-print(training_targets.shape)
-
 np.save('inputs', training_inputs)
 np.save('targets', training_targets)
