@@ -27,7 +27,7 @@ print(tf.__version__)
 
 
 def scheduler(epoch):
-    if epoch < 150:
+    if epoch < 300:
         return 0.0001
     else:
         return 0.000001
@@ -122,11 +122,14 @@ class MyModel(tf.keras.Model):
         self.conv10 = layers.Conv2D(64, 1, kernel_initializer=initializer)
 
         self.flattenLayer = tf.keras.layers.Flatten()
-        self.denseLayer1 = tf.keras.layers.Dense(128, activation='relu')
-        self.denseLayer2 = tf.keras.layers.Dense(256, activation='sigmoid')
+        self.denseLayer1 = tf.keras.layers.Dense(512, activation='relu')
         self.drop3 = tf.keras.layers.Dropout(rate=0.5)
+        self.denseLayer2 = tf.keras.layers.Dense(1024, activation='relu')
+        self.drop4 = tf.keras.layers.Dropout(rate=0.5)
         # trying swish?
-        self.denseLayer3 = tf.keras.layers.Dense(256, activation='swish')
+        # paying off! using it just before final layer helps keep the output above 0
+        self.denseLayer3 = tf.keras.layers.Dense(512, activation='swish')
+        self.drop5 = tf.keras.layers.Dropout(rate=0.5)
         self.finalLayer = tf.keras.layers.Dense(1024)
 
     # Changed the training function to true
@@ -192,10 +195,12 @@ class MyModel(tf.keras.Model):
 
         flattenlayer = self.flattenLayer(conv10)
         denselayer1 = self.denseLayer1(flattenlayer)
-        denselayer2 = self.denseLayer2(denselayer1)
-        drop3 = self.drop3(denselayer2)
-        denselayer3 = self.denseLayer3(drop3)
-        finallayer = self.finalLayer(denselayer3)
+        drop3 = self.drop3(denselayer1)
+        denselayer2 = self.denseLayer2(drop3)
+        drop4 = self.drop4(denselayer2)
+        denselayer3 = self.denseLayer3(drop4)
+        drop5 = self.drop5(denselayer3)
+        finallayer = self.finalLayer(drop5)
 
         return finallayer
 
@@ -261,8 +266,8 @@ tf.keras.backend.set_floatx('float64')
 
 # setting up the model
 model = MyModel()
-model.build(input_shape=(1024, 32, 32, 1))
-# Changelog
+model.build(input_shape=(1, 32, 32, 1))
+# Changelogf
 # - changed loss from logcosh to mse - changed it back lmao
 model.compile(optimizer='adam',
               loss='logcosh',
