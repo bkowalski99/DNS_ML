@@ -61,8 +61,8 @@ class MyModel(tf.keras.Model):
         self.pool2 = layers.MaxPooling2D(2, 2, padding='valid')
 
         # third layer of convolutions
-        self.conv3_1 = layers.Conv2D(128, 1, activation=tf.nn.relu, kernel_initializer=initializer)
-        self.conv3_2 = layers.Conv2D(128, 1, activation=tf.nn.relu, kernel_initializer=initializer)
+        self.conv3_1 = layers.Conv2D(128, 1, activation='relu', kernel_initializer=initializer)
+        self.conv3_2 = layers.Conv2D(128, 1, activation='relu', kernel_initializer=initializer)
 
         # had to set cropping tuple to be (0, 0) for the code to compile
         self.crop3 = layers.Cropping2D(cropping=(0, 0))
@@ -125,10 +125,12 @@ class MyModel(tf.keras.Model):
         self.denseLayer1 = tf.keras.layers.Dense(128, activation='relu')
         self.denseLayer2 = tf.keras.layers.Dense(256, activation='sigmoid')
         self.drop3 = tf.keras.layers.Dropout(rate=0.5)
-        self.denseLayer3 = tf.keras.layers.Dense(256, activation='relu')
+        # trying swish?
+        self.denseLayer3 = tf.keras.layers.Dense(256, activation='swish')
         self.finalLayer = tf.keras.layers.Dense(1024)
 
-    def call(self, inputs, training=None, mask=None):
+    # Changed the training function to true
+    def call(self, inputs, training=True, mask=None):
         conv1_1 = self.conv1_1(inputs)
         conv1_2 = self.conv1_2(conv1_1)
         crop1 = self.crop1(conv1_2)
@@ -261,7 +263,7 @@ tf.keras.backend.set_floatx('float64')
 model = MyModel()
 model.build(input_shape=(1024, 32, 32, 1))
 # Changelog
-# - changed loss from logcosh to mse
+# - changed loss from logcosh to mse - changed it back lmao
 model.compile(optimizer='adam',
               loss='logcosh',
               metrics=['mae', 'mse'])
@@ -279,7 +281,7 @@ EPOCHS = 300
 # Possible changes to improve training
 #   - Update batch_size?
 #   - Use a validation set from the data
-model.fit(testing_dataset, callbacks=[callback, early_stop], validation_data=validation_dataset,
+model.fit(testing_dataset, callbacks=[callback, early_stop], validation_data=validation_dataset, batch_size=400,
           use_multiprocessing=True, epochs=EPOCHS)
 
 loss, test_mae, test_mse = model.evaluate(testing_dataset, verbose=2)
@@ -304,3 +306,14 @@ plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
 plt.show()
+
+predictions = predictions.reshape(1024, 32, 32)
+testing_targets = testing_targets.reshape(1024, 32, 32)
+# learned a bit more about the shapes its predicting, look into noise reduction?
+for z in range(30):
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.imshow(predictions[500+z])
+    ax1.set_title('Prediction')
+    ax2.imshow(testing_targets[500+z])
+    ax2.set_title('Target')
+    plt.show()

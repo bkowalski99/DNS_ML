@@ -144,3 +144,14 @@ plt.xlim(lims)
 plt.ylim(lims)
 _ = plt.plot(lims, lims)
 plt.show()
+
+predictions = predictions.reshape(1024, 32, 32)
+testing_targets = testing_targets.reshape(1024, 32, 32)
+for z in range(10):
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.imshow(predictions[1000+z])
+    ax1.set_title('Prediction')
+    ax2.imshow(testing_targets[1000+z])
+    ax2.set_title('Target')
+    plt.show()
+    
