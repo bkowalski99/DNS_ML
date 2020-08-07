@@ -281,7 +281,8 @@ callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
 early_stop = keras.callbacks.EarlyStopping(monitor='val_mae', patience=5)
 
 # number of cycles
-EPOCHS = 300
+# TODO: change this back
+EPOCHS = 150
 
 # Possible changes to improve training
 #   - Update batch_size?
@@ -313,16 +314,17 @@ _ = plt.plot(lims, lims)
 plt.show()
 
 predictions = predictions.reshape(1024, 32, 32)
+testing_inputs = testing_inputs.reshape(1024, 32, 32)
 testing_targets = testing_targets.reshape(1024, 32, 32)
 # learned a bit more about the shapes its predicting, look into noise reduction?
 for z in range(30):
     fig, axs = plt.subplots(2, 2)
-    axs[0,0].imshow(tesing_dataset[500+z][0])
-    axs[0,0].set_title('Prediction input')
-    axs[0,1].imshow(testing_inputs[500+z])
-    axs[0,1].set_title('Target')
-    axs[1,0].imshow(predictions[500+z])
-    axs[1,0].set_title('Prediction')
-    axs[1,1].imshow(testing_targets[500+z])
-    axs[1,1].set_title('Target')
+    axs[0, 0].imshow(testing_inputs[500+z])
+    axs[0, 0].set_title('Prediction Input')
+    axs[0, 1].imshow(testing_inputs[500+z])
+    axs[0, 1].set_title('Target Input')
+    axs[1, 0].imshow(predictions[500+z])
+    axs[1, 0].set_title('Prediction Result')
+    axs[1, 1].imshow(testing_targets[500+z])
+    axs[1, 1].set_title('Target Result')
     plt.show()

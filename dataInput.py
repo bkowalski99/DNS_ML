@@ -56,22 +56,16 @@ def smoother(data, output, window_size):
             output[r][y] = genelem(data, window_size, r*window_size, y*window_size)
 
 
+# TODO: Look back into vfield, some saved points have issues?
 def variancefield(h, hbr, outputs):
-    temp = 0
+
     for z in range(32):
         for y in range(32):
-            num = hbr[z][y]
+            temp = 0
             for w in range(8):
                 for q in range(8):
-                    temp = temp + pow((num-h[z*8 + w][y*8 + q]), 2)
+                    temp = temp + pow((hbr[z][y]-(h[z*8 + w][y*8 + q])), 2)
             outputs[z][y] = temp/64
-            temp = 0
-
-# def variancefield(points, outputs, pos, hbaravg):
-#     temp = 0
-#     for z in range(len(points)):
-#         temp = temp + pow(points[z] - hbaravg, 2)
-#     outputs[pos] = temp / len(points)
 
 
 # NOTES FOR PROGRESS
@@ -121,7 +115,7 @@ else:
     floats = np.fromfile(file, 'f4')
     file.close()
 
-    reshapedFloats = np.reshape(floats, (256, 256, 256))
+    reshapedFloats = floats.reshape(256, 256, 256)
 
 # here the smooth field is being generated to create the 32 x 32 planes
 hbar = np.zeros((len(reshapedFloats), 32, 32), float)
@@ -139,11 +133,13 @@ training_targets = varouts
 
 # the rest of the data is read in with 2 for loops, one for getting the single digits, and one for the double digits
 for j in range(8):
-    print("reading data ", j+1)
-    number = j+1
+    number = j + 1
+    print("reading data ", number)
+
+
 
     if term is 'V':
-        path = makepath(path, term, number)
+        filepath = makepath(path, term, str(number))
         file = open(filepath, 'rb')
         file.seek(244, 0)
         floats = np.fromfile(file, 'f4')
@@ -158,11 +154,12 @@ for j in range(8):
         reshapedFloats = np.concatenate((reshapedFloats, x[1]))
         reshapedFloats = np.concatenate((reshapedFloats, x[2]))
     else:
+        filepath = makepath(path, term, str(number))
         file = open(filepath, 'rb')
         file.seek(244, 0)
         floats = np.fromfile(file, 'f4')
         file.close()
-        reshapedFloats = np.reshape(floats, (256, 256, 256))
+        reshapedFloats = floats.reshape(256, 256, 256)
 
     # here the smooth field is being generated to create the 32 x 32 planes
     hbar = np.zeros((len(reshapedFloats), 32, 32), float)
@@ -201,7 +198,7 @@ for j in range(3):
         floats = np.fromfile(file, 'f4')
         file.close()
 
-        reshapedFloats = np.reshape(floats, (256, 256, 256))
+        reshapedFloats = floats.reshape(256, 256, 256)
 
     # here the smooth field is being generated to create the 32 x 32 planes
     hbar = np.zeros((len(reshapedFloats), 32, 32), float)

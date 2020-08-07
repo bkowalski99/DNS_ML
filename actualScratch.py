@@ -4,6 +4,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 
+
 def look(data1, data2):
     for i in range(1024):
         print(i)
@@ -15,13 +16,26 @@ def look(data1, data2):
         print(np.average(data2[i]))
 
 
+def heatmapcomparison(data1, data2, numberofplots):
+    for z in range(numberofplots):
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        fig.suptitle("Graph "+str(z))
+        ax1.imshow(data1[z])
+        ax1.set_title('input smooth field')
+        ax2.imshow(data2[z])
+        ax2.set_title('target variance field')
+        plt.show()
+
+
 # loads in normalized version of data
+originputs = np.load('inputs.npy')
+origtargets = np.load('targets.npy')
 loadedinputs = np.load('normedInputs.npy')
 loadedtargets = np.load('normedTargets.npy')
 
-loadedinputs = loadedinputs.reshape(3072, 32, 32, 1)
-loadedtargets = loadedtargets.reshape(3072, 1024, 1)
+originputs = originputs.reshape(3072, 32, 32)
+origtargets = origtargets.reshape(3072, 32, 32)
+loadedinputs = loadedinputs.reshape(3072, 32, 32)
+loadedtargets = loadedtargets.reshape(3072, 32, 32)
 
-all_data = tf.data.Dataset.from_tensors((loadedinputs, loadedtargets))
-
-tfds.Split.TRAIN
+heatmapcomparison(originputs, origtargets, 32)
