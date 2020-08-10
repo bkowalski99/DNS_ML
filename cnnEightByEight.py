@@ -41,7 +41,7 @@ class MyModel(tf.keras.Model):
         super(MyModel, self).__init__()
         initializer = 'he_uniform'
         self.conv1_1 = layers.Conv2D(32, 1, activation='relu', kernel_initializer=initializer,
-                                     data_format='channels_last', input_shape=[32, 32, 1])
+                                     data_format='channels_last', input_shape=[8, 8, 1])
         self.conv1_2 = layers.Conv2D(32, 1, activation='relu', kernel_initializer=initializer)
         # cropped version to be concatenated later
         # had to set cropping tuple to be (0, 0) for the code to compile
@@ -130,7 +130,7 @@ class MyModel(tf.keras.Model):
         # paying off! using it just before final layer helps keep the output above 0
         self.denseLayer3 = tf.keras.layers.Dense(512, activation='swish')
         self.drop5 = tf.keras.layers.Dropout(rate=0.5)
-        self.finalLayer = tf.keras.layers.Dense(1024)
+        self.finalLayer = tf.keras.layers.Dense(64)
 
     # Changed the training function to true
     def call(self, inputs, training=True, mask=None):
@@ -222,8 +222,8 @@ class MyModel(tf.keras.Model):
 
 
 # loads in normalized version of data
-loadedinputs = np.load('normedInputs.npy')
-loadedtargets = np.load('normedTargets.npy')
+loadedinputs = np.load('8x8NormedInputs.npy')
+loadedtargets = np.load('8x8NormedTargets.npy')
 
 # splits the data into a training section and a testing section
 # ideally this would be done on a 70/30 split but I need to see how the method works
@@ -239,12 +239,12 @@ testing_inputs = inputset[2]
 testing_targets = targetset[2]
 
 # reformatting data so ndim=4
-training_inputs = training_inputs.reshape(1024, 32, 32, 1)
-validation_inputs = validation_inputs.reshape(1024, 32, 32, 1)
-testing_inputs = testing_inputs.reshape(1024, 32, 32, 1)
-training_targets = training_targets.reshape(1024, 1024, 1)
-validation_targets = validation_targets.reshape(1024, 1024, 1)
-testing_targets = testing_targets.reshape(1024, 1024, 1)
+training_inputs = training_inputs.reshape(16384, 8, 8, 1)
+validation_inputs = validation_inputs.reshape(16384, 8, 8, 1)
+testing_inputs = testing_inputs.reshape(16384, 8, 8, 1)
+training_targets = training_targets.reshape(16384, 1024, 1)
+validation_targets = validation_targets.reshape(16384, 64, 1)
+testing_targets = testing_targets.reshape(16384, 64, 1)
 
 print(training_inputs.shape)
 print(training_targets.shape)
@@ -266,7 +266,7 @@ tf.keras.backend.set_floatx('float64')
 
 # setting up the model
 model = MyModel()
-model.build(input_shape=(1, 32, 32, 1))
+model.build(input_shape=(1, 8, 8, 1))
 # Changelogf
 # - changed loss from logcosh to mse - changed it back lmao
 model.compile(optimizer='adam',
@@ -312,9 +312,9 @@ plt.ylim(lims)
 _ = plt.plot(lims, lims)
 plt.show()
 
-predictions = predictions.reshape(1024, 32, 32)
-testing_inputs = testing_inputs.reshape(1024, 32, 32)
-testing_targets = testing_targets.reshape(1024, 32, 32)
+predictions = predictions.reshape(16384, 8, 8)
+testing_inputs = testing_inputs.reshape(16384, 8, 8)
+testing_targets = testing_targets.reshape(16384, 8, 8)
 # learned a bit more about the shapes its predicting, look into noise reduction?
 for z in range(30):
     fig, axs = plt.subplots(2, 2)
