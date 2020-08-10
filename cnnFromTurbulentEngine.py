@@ -281,8 +281,7 @@ callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
 early_stop = keras.callbacks.EarlyStopping(monitor='val_mae', patience=5)
 
 # number of cycles
-# TODO: change this back
-EPOCHS = 150
+EPOCHS = 300
 
 # Possible changes to improve training
 #   - Update batch_size?

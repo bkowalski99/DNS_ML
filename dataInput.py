@@ -26,6 +26,7 @@ def heatmapcomparison(data1, data2, numberofplots):
 def allcompared(data1, data2, data3, numberofplots):
     for z in range(numberofplots):
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
+        fig.suptitle("Graph #" + str(z))
         ax1.imshow(data1[z])
         ax1.set_title('h')
         ax2.imshow(data2[z])
@@ -79,8 +80,8 @@ def variancefield(h, hbr, outputs):
 # QUESTIONS
 
 # Read first set of floats
-path = input('Please type the path to your data (do not add closing \'/\'): ')
-term = input('And what term are you using? ')
+path = '/media/bearington/QUICKDROP/scalar_data/ensight-3D/Enthalpy'# input('Please type the path to your data (do not add closing \'/\'): ')
+term = 'Enthalpy' # input('And what term are you using? ')
 filepath = makepath(path, term, 1)
 # Here the arrays are initialized to be filled later
 training_inputs = np.array((), float)
