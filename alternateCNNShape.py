@@ -85,8 +85,8 @@ tf.keras.backend.set_floatx('float64')
 # - took out the 2 relu layers following the pooling ops
 # - increased number of nodes in 3rd convolution 64 -> 128
 model = keras.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal(),
-                  input_shape=[32, 32, 1]),
+    layers.InputLayer(input_shape=(32, 32, 1)),
+    layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal()),
     layers.MaxPooling2D((2, 2), strides=1),
     layers.Conv2D(64, (3, 3), activation='relu'),
     layers.MaxPooling2D((2, 2), strides=1),

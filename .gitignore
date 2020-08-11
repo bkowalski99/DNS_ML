@@ -1,4 +1,3 @@
-/dataForConversion.txt
 /inputs.npy
 /normedInputs.npy
 /normedTargets.npy
@@ -7,3 +6,7 @@
 /8X8_targets.npy
 /8x8NormedInputs.npy
 /8x8NormedTargets.npy
+/inputsConversion8x8.txt
+/inputsConversion32x32.txt
+/targetsConversion8x8.txt
+/targetsConversion32x32.txt

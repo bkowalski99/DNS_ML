@@ -40,6 +40,7 @@ class MyModel(tf.keras.Model):
     def __init__(self):
         super(MyModel, self).__init__()
         initializer = 'he_uniform'
+        self.inputLayer = layers.InputLayer(input_shape=(32, 32, 1))
         self.conv1_1 = layers.Conv2D(32, 1, activation='relu', kernel_initializer=initializer,
                                      data_format='channels_last', input_shape=[32, 32, 1])
         self.conv1_2 = layers.Conv2D(32, 1, activation='relu', kernel_initializer=initializer)
@@ -134,7 +135,8 @@ class MyModel(tf.keras.Model):
 
     # Changed the training function to true
     def call(self, inputs, training=True, mask=None):
-        conv1_1 = self.conv1_1(inputs)
+        inputlayer = self.inputLayer(inputs)
+        conv1_1 = self.conv1_1(inputlayer)
         conv1_2 = self.conv1_2(conv1_1)
         crop1 = self.crop1(conv1_2)
 
@@ -281,7 +283,7 @@ callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
 early_stop = keras.callbacks.EarlyStopping(monitor='val_mae', patience=5)
 
 # number of cycles
-EPOCHS = 300
+EPOCHS = 30
 
 # Possible changes to improve training
 #   - Update batch_size?
