@@ -27,10 +27,10 @@ print(tf.__version__)
 
 
 def scheduler(epoch):
-    if epoch < 300:
+    if epoch < 150:
         return 0.0001
     else:
-        return 0.000001
+        return 0.00001
 
 
 # Changelog
@@ -242,7 +242,7 @@ testing_targets = targetset[2]
 training_inputs = training_inputs.reshape(16384, 8, 8, 1)
 validation_inputs = validation_inputs.reshape(16384, 8, 8, 1)
 testing_inputs = testing_inputs.reshape(16384, 8, 8, 1)
-training_targets = training_targets.reshape(16384, 1024, 1)
+training_targets = training_targets.reshape(16384, 64, 1)
 validation_targets = validation_targets.reshape(16384, 64, 1)
 testing_targets = testing_targets.reshape(16384, 64, 1)
 
@@ -316,7 +316,7 @@ predictions = predictions.reshape(16384, 8, 8)
 testing_inputs = testing_inputs.reshape(16384, 8, 8)
 testing_targets = testing_targets.reshape(16384, 8, 8)
 # learned a bit more about the shapes its predicting, look into noise reduction?
-for z in range(30):
+for z in range(300):
     fig, axs = plt.subplots(2, 2)
     axs[0, 0].imshow(testing_inputs[z])
     axs[0, 0].set_title('Prediction Input')

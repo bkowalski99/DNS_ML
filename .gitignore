@@ -3,3 +3,7 @@
 /normedInputs.npy
 /normedTargets.npy
 /targets.npy
+/8X8_inputs.npy
+/8X8_targets.npy
+/8x8NormedInputs.npy
+/8x8NormedTargets.npy

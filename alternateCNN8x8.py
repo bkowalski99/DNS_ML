@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -8,6 +7,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 print(tf.__version__)
+
 
 # Notes
 # Up and working for real now, current steps
@@ -31,15 +31,15 @@ print(tf.__version__)
 
 
 def scheduler(epoch):
-    if epoch < 175:
-        return 0.01
+    if epoch < 75:
+        return 0.0001
     else:
-        return 0.000002
+        return 0.00001
 
 
 # loads in normalized version of data
-loadedinputs = np.load('normedInputs.npy')
-loadedtargets = np.load('normedTargets.npy')
+loadedinputs = np.load('8x8NormedInputs.npy')
+loadedtargets = np.load('8x8NormedTargets.npy')
 
 # splits the data into a training section and a testing section
 # ideally this would be done on a 70/30 split but I need to see how the method works
@@ -55,12 +55,12 @@ testing_inputs = inputset[2]
 testing_targets = targetset[2]
 
 # reformatting data so ndim=4
-training_inputs = training_inputs.reshape(1024, 32, 32, 1)
-validation_inputs = validation_inputs.reshape(1024, 32, 32, 1)
-testing_inputs = testing_inputs.reshape(1024, 32, 32, 1)
-training_targets = training_targets.reshape(1024, 1024, 1)
-validation_targets = validation_targets.reshape(1024, 1024, 1)
-testing_targets = testing_targets.reshape(1024, 1024, 1)
+training_inputs = training_inputs.reshape(16384, 8, 8, 1)
+validation_inputs = validation_inputs.reshape(16384, 8, 8, 1)
+testing_inputs = testing_inputs.reshape(16384, 8, 8, 1)
+training_targets = training_targets.reshape(16384, 64, 1)
+validation_targets = validation_targets.reshape(16384, 64, 1)
+testing_targets = testing_targets.reshape(16384, 64, 1)
 
 print(training_inputs.shape)
 print(training_targets.shape)
@@ -85,23 +85,20 @@ tf.keras.backend.set_floatx('float64')
 # - took out the 2 relu layers following the pooling ops
 # - increased number of nodes in 3rd convolution 64 -> 128
 model = keras.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal(),
-                  input_shape=[32, 32, 1]),
-    layers.MaxPooling2D((2, 2), strides=1),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2), strides=1),
-    layers.Conv2D(128, (2, 2), activation='relu'),
+    layers.Conv2D(64, (2, 2), activation='relu', kernel_initializer=keras.initializers.GlorotNormal(),
+                  input_shape=[8, 8, 1]),
+    layers.Conv2D(512, (2, 2), activation='relu'),
     layers.Flatten(),
     layers.Dense(512, activation='relu'),
     layers.Dropout(rate=0.5),
-    layers.Dense(1024, activation='swish'),
+    layers.Dense(1024, activation='relu'),
     layers.Dropout(rate=0.5),
-    layers.Dense(512, activation='swish'),
+    layers.Dense(1024, activation='swish'),
     layers.Dropout(rate=0.5),
     layers.Dense(64)
 ])
 
-model.build(input_shape=(1, 32, 32, 1))
+model.build(input_shape=(1, 8, 8, 1))
 model.compile(optimizer='adam',
               loss='logcosh',
               metrics=['mae', 'mse'])
@@ -111,7 +108,7 @@ model.summary()
 
 # set up controls for learning rate and early stopping to quit when data is saturated
 callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
-early_stop = keras.callbacks.EarlyStopping(monitor='val_mae', patience=5)
+early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
 
 # number of cycles
 EPOCHS = 300
@@ -120,7 +117,7 @@ EPOCHS = 300
 #   - Update batch_size?
 #   - Use a validation set from the data
 model.fit(train_dataset, callbacks=[callback, early_stop], validation_data=validation_dataset, use_multiprocessing=True,
-          epochs=EPOCHS, batch_size=400)
+          epochs=EPOCHS)
 
 loss, test_mae, test_mse = model.evaluate(testing_dataset, verbose=2)
 
@@ -146,13 +143,18 @@ plt.ylim(lims)
 _ = plt.plot(lims, lims)
 plt.show()
 
-predictions = predictions.reshape(1024, 32, 32)
-testing_targets = testing_targets.reshape(1024, 32, 32)
-for z in range(10):
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    ax1.imshow(predictions[1000+z])
-    ax1.set_title('Prediction')
-    ax2.imshow(testing_targets[1000+z])
-    ax2.set_title('Target')
+predictions = predictions.reshape(16384, 8, 8)
+testing_targets = testing_targets.reshape(16384, 8, 8)
+testing_inputs = testing_inputs.reshape(16384, 8, 8)
+
+for z in range(300):
+    fig, axs = plt.subplots(2, 2)
+    axs[0, 0].imshow(testing_inputs[z])
+    axs[0, 0].set_title('Prediction Input')
+    axs[0, 1].imshow(testing_inputs[z])
+    axs[0, 1].set_title('Target Input')
+    axs[1, 0].imshow(predictions[z])
+    axs[1, 0].set_title('Prediction Result')
+    axs[1, 1].imshow(testing_targets[z])
+    axs[1, 1].set_title('Target Result')
     plt.show()
-    
