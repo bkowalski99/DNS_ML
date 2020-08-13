@@ -57,7 +57,6 @@ def smoother(data, output, window_size):
             output[r][y] = genelem(data, window_size, r*window_size, y*window_size)
 
 
-# TODO: Look back into vfield, some saved points have issues?
 def variancefield(h, hbr, outputs):
 
     for z in range(32):
