@@ -80,8 +80,8 @@ def variancefield(h, hbr, outputs):
 # QUESTIONS
 
 # Read first set of floats
-path = '/media/bearington/QUICKDROP/scalar_data/ensight-3D/Enthalpy'# input('Please type the path to your data (do not add closing \'/\'): ')
-term = 'Enthalpy' # input('And what term are you using? ')
+path = input('Please type the path to your data (do not add closing \'/\'): ')
+term = input('And what term are you using? ')
 filepath = makepath(path, term, 1)
 # Here the arrays are initialized to be filled later
 training_inputs = np.array((), float)
