@@ -32,7 +32,7 @@ print(tf.__version__)
 
 def scheduler(epoch):
     if epoch < 175:
-        return 0.01
+        return 0.00001
     else:
         return 0.000002
 
@@ -85,20 +85,19 @@ tf.keras.backend.set_floatx('float64')
 # - took out the 2 relu layers following the pooling ops
 # - increased number of nodes in 3rd convolution 64 -> 128
 model = keras.Sequential([
-    layers.InputLayer(input_shape=(32, 32, 1)),
-    layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal()),
-    layers.MaxPooling2D((2, 2), strides=1),
+    layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal(),
+                  input_shape=[32, 32, 1]),
+    # layers.MaxPooling2D((2, 2), strides=1),
     layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2), strides=1),
+    # layers.MaxPooling2D((2, 2), strides=1),
     layers.Conv2D(128, (2, 2), activation='relu'),
     layers.Flatten(),
-    layers.Dense(512, activation='relu'),
+    layers.Dense(1024, activation='sigmoid'),
     layers.Dropout(rate=0.5),
-    layers.Dense(1024, activation='swish'),
+    layers.Dense(256, activation='sigmoid'),
     layers.Dropout(rate=0.5),
-    layers.Dense(512, activation='swish'),
-    layers.Dropout(rate=0.5),
-    layers.Dense(64)
+    layers.Dense(128, activation='sigmoid'),
+    layers.Dense(1024)
 ])
 
 model.build(input_shape=(1, 32, 32, 1))
