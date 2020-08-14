@@ -7,12 +7,8 @@ loadedinputs = np.load('inputs.npy')
 loadedtargets = np.load('targets.npy')
 # file to save information for when we convert back
 
-
-# TODO: Saved max and min to reset data after NN runs
 loadedinputs = loadedinputs.reshape(3072, 32, 32)
 loadedtargets = loadedtargets.reshape(3072, 32, 32)
-inputs_8x8 = inputs_8x8.reshape(49152, 8, 8)
-targets_8x8 = targets_8x8.reshape(49152, 8, 8)
 
 # normalization uses x - min / max - min
 # this makes max possible value 1 and min possible value 0
