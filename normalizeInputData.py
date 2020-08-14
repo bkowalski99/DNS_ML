@@ -5,8 +5,6 @@ print('starting')
 # loads in data from the saved numpy files in dataInput
 loadedinputs = np.load('inputs.npy')
 loadedtargets = np.load('targets.npy')
-inputs_8x8 = np.load('8X8_inputs.npy')
-targets_8x8 = np.load('8X8_targets.npy')
 # file to save information for when we convert back
 
 
@@ -37,6 +35,4 @@ file.close()
 
 np.save('normedInputs', loadedinputs)
 np.save('normedTargets', loadedtargets)
-np.save('8x8NormedInputs', inputs_8x8)
-np.save('8x8NormedTargets', targets_8x8)
 print('done')
