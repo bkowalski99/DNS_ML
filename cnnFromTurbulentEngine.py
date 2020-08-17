@@ -1,4 +1,20 @@
 
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script trains a neural network to predict the variance field matrix from a smoothed field matrix.
+    The network in question is a Convolutional Neural Network that goes through several convolutional and pooling
+    stages, followed by a series of upsampling stages used to return the image to its original size.
+    This script starts by loading in the normalized inputs from the normedInputs.npy and normedTargets.npy
+    files. These files are then split into 3 sets each: one for training, one for validating, and one for testing. The
+    sets are then converted into datasets by grouping the inputs and their respective targets together. The model is
+    then designed and the parameters are set. Before the model can be run the callbacks to control the learning rate and
+    to enable early stopping are written and implemented. After this the model is trained in the model.fit() method.
+    Finally, the results are observed by using the trained model to predict the variance fields of the testing dataset.
+    This data is used to graph the predictions versus targets graphs, and lastly to visually compare the outputs of the
+    predictions against the expected targets.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 
