@@ -1,3 +1,14 @@
+
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script normalizes the 8x8 matrices provided by dataInput.py. Without the 8X8_inputs.npy and
+    8X8_targets.npy files this file will fail. The results are stored as 8x8NormedInputs.npy and 8x8NormedTargets.npy
+    respectively. The maximum and minimum of each plane are saved in the files inputsConversion8x8.txt and
+    targetsConversion8x8.txt. To restore these to be non normalized multiply the plane by the difference of the maximum
+    and the minimum, then add the minimum to the plane.
+"""
+
 import numpy as np
 
 print('starting')

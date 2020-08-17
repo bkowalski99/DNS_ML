@@ -1,4 +1,14 @@
 
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script reads in the Ensight-3D file designated by the user and stores the smoothed field version and
+    stores the corresponding variance fields as 8x8 fields. A set of 16 8x8 fields corresponds to one 32x32 field.
+    Additionally this function contains methods to show the various fields as images, such as heatmap,
+    heatmapcomparison, and allcompared. After loading in all the data the 8x8 smoothed fields are saved as
+    8X8_inputs.npy and the 8x8 variance fields as 8X8_targets.npy.
+"""
+
 import numpy as np
 
 import matplotlib.pyplot as plt

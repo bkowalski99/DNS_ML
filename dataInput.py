@@ -1,4 +1,13 @@
 
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script reads in the Ensight-3D file designated by the user and stores the smoothed field version and
+    stores the corresponding variance fields. Additionally this function contains methods to show the various fields as
+    images, such as heatmap, heatmapcomparison, and allcompared. After loading in all the data the smoothed fields are
+    saved as inputs.npy and the variance fields as targets.npy.
+"""
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -67,16 +76,6 @@ def variancefield(h, hbr, outputs):
                     temp = temp + pow((hbr[z][y]-(h[z*8 + w][y*8 + q])), 2)
             outputs[z][y] = temp/64
 
-
-# NOTES FOR PROGRESS
-# This could be changed from a run through then a second run through continuously to being a do-while loop but the code
-# would be much less efficient do to added if statements near the end
-
-# GOALS
-# Reconstruct the V handler to save all elements from v
-#
-
-# QUESTIONS
 
 # Read first set of floats
 path = input('Please type the path to your data (do not add closing \'/\'): ')

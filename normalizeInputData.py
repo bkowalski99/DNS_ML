@@ -1,4 +1,14 @@
 
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script normalizes the 32x32 matrices provided by dataInput.py. Without the inputs.npy and targets.npy
+    files this file will fail. The results are stored as normedInputs.npy and normedTargets.npy respectively.
+    The maximum and minimum of each plane are saved in the files inputsConversion32x32.txt and
+    targetsConversion32x32.txt. To restore these to be non normalized multiply the plane by the difference of the
+    maximum and the minimum, then add the minimum to the plane.
+"""
+
 import numpy as np
 
 print('starting')

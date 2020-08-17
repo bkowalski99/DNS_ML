@@ -1,4 +1,19 @@
 
+""" Author: Ben Kowalski
+    Date: 8/17/2020
+    Email: bkowalski99@gmail.com
+    Function: This script trains a neural network to predict the variance field matrix from a smoothed field matrix.
+    The network in question is a Convolutional Neural Network that goes through several convolutional and pooling
+    stages. This script starts by loading in the normalized inputs from the normedInputs.npy and normedTargets.npy
+    files. These files are then split into 3 sets each: one for training, one for validating, and one for testing. The
+    sets are then converted into datasets by grouping the inputs and their respective targets together. The model is
+    then designed and the parameters are set. Before the model can be run the callbacks to control the learning rate and
+    to enable early stopping are written and implemented. After this the model is trained in the model.fit() method.
+    Finally, the results are observed by using the trained model to predict the variance fields of the testing dataset.
+    This data is used to graph the predictions versus targets graphs, and lastly to visually compare the outputs of the
+    predictions against the expected targets.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -79,11 +94,7 @@ testing_dataset = tf.data.Dataset.from_tensors((testing_inputs, testing_targets)
 # Setting the program to expect numpy doubles
 tf.keras.backend.set_floatx('float64')
 
-# setting up the model
-# Changelog
-# - added 2 dropout layers
-# - took out the 2 relu layers following the pooling ops
-# - increased number of nodes in 3rd convolution 64 -> 128
+# designing the sequential model
 model = keras.Sequential([
     layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer=keras.initializers.GlorotNormal(),
                   input_shape=[32, 32, 1]),
@@ -100,6 +111,7 @@ model = keras.Sequential([
     layers.Dense(1024)
 ])
 
+# setting the parameters for the model
 model.build(input_shape=(1, 32, 32, 1))
 model.compile(optimizer='adam',
               loss='logcosh',
